@@ -1,0 +1,62 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Start kiwix-serve on the ZIM files found in the configured NAS mount.
+# s6-overlay docs: https://github.com/just-containers/s6-overlay
+# ==============================================================================
+declare zim_path
+declare threads
+declare -a ARGS
+declare -a ZIMS
+
+zim_path=$(bashio::config 'zim_path')
+threads=$(bashio::config 'threads')
+
+bashio::log.info "Kiwiks: ZIM path is ${zim_path}"
+
+# The NAS itself is mounted once in Home Assistant
+# (Settings -> System -> Storage -> Add network storage).
+# This app only sees it through /media or /share, so fail fast with a
+# helpful message if the mount is missing.
+if [[ ! -d "${zim_path}" ]]; then
+    bashio::log.error "Directory not found: ${zim_path}"
+    bashio::log.error "Mount your NAS in Home Assistant first (Settings -> System -> Storage -> Add network storage,"
+    bashio::log.error "usage Media or Share), copy your *.zim files there, then set 'zim_path' to that mount,"
+    bashio::log.error "e.g. /media/kiwiks or /share/kiwiks."
+    exit 1
+fi
+
+# Collect *.zim files in the top level (read-only; files stay on the NAS).
+# Nullglob + nocaseglob keeps this safe for spaces and .ZIM extensions
+# without depending on find/sort flag variants.
+shopt -s nullglob nocaseglob
+ZIMS=( "${zim_path}"/*.zim )
+shopt -u nullglob nocaseglob
+
+if [[ "${#ZIMS[@]}" -eq 0 ]]; then
+    bashio::log.error "No *.zim files found in ${zim_path}"
+    bashio::log.error "Contents of ${zim_path}:"
+    ls -la "${zim_path}" || true
+    exit 1
+fi
+
+bashio::log.info "Found ${#ZIMS[@]} ZIM file(s):"
+for zim in "${ZIMS[@]}"; do
+    bashio::log.info "  - ${zim}"
+done
+
+ARGS=(--port 8080 --threads "${threads}")
+
+if bashio::config.true 'nodatealiases'; then
+    ARGS+=(--nodatealiases)
+fi
+
+if bashio::config.true 'block_external'; then
+    ARGS+=(--blockexternal)
+fi
+
+if bashio::config.true 'verbose'; then
+    ARGS+=(--verbose)
+fi
+
+bashio::log.info "Starting kiwix-serve on port 8080..."
+exec kiwix-serve "${ARGS[@]}" "${ZIMS[@]}"

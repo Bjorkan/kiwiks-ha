@@ -1,0 +1,38 @@
+# https://developers.home-assistant.io/docs/apps/configuration#app-configuration
+name: Kiwiks
+version: 1.0.0
+slug: kiwiks
+description: Serve offline ZIM files (Kiwix) from your NAS network storage
+url: https://github.com/Bjorkan/kiwiks-ha/tree/main/kiwiks
+arch:
+  - aarch64
+  - amd64
+startup: application
+boot: auto
+stage: experimental
+init: false
+webui: http://[HOST]:[PORT:8080]/
+watchdog: http://[HOST]:[PORT:8080]/catalog/v2/entries?count=0
+ports:
+  8080/tcp: 8080
+ports_description:
+  8080/tcp: Kiwix-serve web interface (library + viewer)
+map:
+  - type: media
+    read_only: true
+  - type: share
+    read_only: true
+options:
+  zim_path: /media/kiwiks
+  threads: 4
+  nodatealiases: false
+  block_external: false
+  verbose: false
+schema:
+  zim_path: str
+  threads: int(1,32)
+  nodatealiases: bool
+  block_external: bool
+  verbose: bool
+# Pre-built multi-arch images on GHCR (see .github/workflows/builder.yaml).
+image: ghcr.io/bjorkan/kiwiks

@@ -1,0 +1,22 @@
+configuration:
+  zim_path:
+    name: ZIM path on the NAS mount
+    description: >-
+      Directory containing your *.zim files, as seen inside the app.
+      Your NAS is mounted once in Home Assistant (Settings > System >
+      Storage > Add network storage, usage Media or Share). Use the
+      resulting path here, e.g. /media/kiwiks or /share/kiwiks.
+  threads:
+    name: Server threads
+    description: Number of kiwix-serve worker threads (1-32).
+  nodatealiases:
+    name: Hide dates in URLs (nodatealiases)
+    description: >-
+      Also serve each book under a date-less alias, e.g.
+      wikipedia_en_all alongside wikipedia_en_all_2024-01.
+  block_external:
+    name: Block external links
+    description: Prevent readers from navigating to external resources via links in ZIM content.
+  verbose:
+    name: Verbose logging
+    description: Print kiwix-serve debug log to STDOUT.

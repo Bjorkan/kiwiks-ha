@@ -1,0 +1,4 @@
+# https://developers.home-assistant.io/docs/apps/repository#repository-configuration
+name: Kiwiks Home Assistant apps
+url: https://github.com/Bjorkan/kiwiks-ha
+maintainer: Bjorkan
