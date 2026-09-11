@@ -67,4 +67,5 @@ builder workflow for pre-built GHCR images when you are ready to publish.
 
 ## License
 
-Apache-2.0 — see [LICENSE](./LICENSE).
+GPL-3.0-or-later, same as [kiwix-tools](https://github.com/kiwix/kiwix-tools)
+— see [LICENSE](./LICENSE).

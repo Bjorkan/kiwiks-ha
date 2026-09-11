@@ -37,4 +37,4 @@ LABEL \
     org.opencontainers.image.title="Home Assistant App: Kiwiks" \
     org.opencontainers.image.description="Serve offline ZIM files (Kiwix) from your NAS network storage" \
     org.opencontainers.image.source="https://github.com/Bjorkan/kiwiks-ha" \
-    org.opencontainers.image.licenses="Apache License 2.0"
+    org.opencontainers.image.licenses="GPL-3.0-or-later"

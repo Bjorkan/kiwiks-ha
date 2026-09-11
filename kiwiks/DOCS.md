@@ -75,5 +75,4 @@ resolves the parts automatically.
 
 ## License
 
-Apache-2.0. kiwix-serve itself is GPLv3 (fetched as upstream binary at
-image build time from `download.kiwix.org`).
+GPL-3.0-or-later, same as [kiwix-tools](https://github.com/kiwix/kiwix-tools).
