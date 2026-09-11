@@ -33,6 +33,11 @@ RUN set -eux; \
 # Copy s6-overlay service definitions
 COPY rootfs /
 
+# Replaces the obsolete config.yaml 'watchdog' key (rejected by the HA linter).
+# The Supervisor hits this endpoint and restarts an unhealthy container.
+HEALTHCHECK --interval=5m --timeout=10s --start-period=1m --retries=3 \
+    CMD wget -q -O /dev/null http://127.0.0.1:8080/catalog/v2/entries?count=0 || exit 1
+
 LABEL \
     org.opencontainers.image.title="Home Assistant App: Kiwiks" \
     org.opencontainers.image.description="Serve offline ZIM files (Kiwix) from your NAS network storage" \
