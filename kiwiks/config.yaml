@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/apps/configuration#app-configuration
 name: Kiwiks
-version: 1.0.0
+version: 1.0.1
 slug: kiwiks
 description: Serve offline ZIM files (Kiwix) from your NAS network storage
 url: https://github.com/Bjorkan/kiwiks-ha/tree/main/kiwiks

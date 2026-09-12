@@ -27,14 +27,32 @@ profile kiwiks flags=(attach_disconnected,mediate_deleted) {
   # Access to options.json and other files within your app
   /data/** rw,
 
+  # Networking. abstractions/base grants NO network access, so without these
+  # rules the Docker HEALTHCHECK (wget) can never succeed.
+  network inet stream,
+  network inet6 stream,
+  network inet dgram,
+  network inet6 dgram,
+  network netlink raw,
+
   # Start new profile for service
   /usr/local/bin/kiwix-serve cx -> kiwix-serve,
 
   profile kiwix-serve flags=(attach_disconnected,mediate_deleted) {
     #include <abstractions/base>
 
-    # Receive signals from S6-Overlay
-    signal (receive) peer=*_kiwiks,
+    # Receive signals from S6-Overlay. The Supervisor renames the parent
+    # profile to the app slug, so do not restrict the peer here.
+    signal (receive) set=(kill,term,int,hup,cont),
+
+    # Networking. abstractions/base grants NO network access and apparmor
+    # denies any socket(2) not listed here. kiwix-serve calls getifaddrs()
+    # (AF_NETLINK) at startup to list its access URLs; without these rules
+    # it is killed by SIGBUS and s6 restarts it in an endless loop.
+    network inet stream,
+    network inet6 stream,
+    network netlink raw,
+    network unix stream,
 
     # Read-only access to the NAS-mounted ZIM library.
     # The NAS is mounted by Home Assistant itself (Settings -> System ->
@@ -44,7 +62,7 @@ profile kiwiks flags=(attach_disconnected,mediate_deleted) {
     /data/** r,
 
     # Access required for service functionality
-    /usr/local/bin/kiwix-serve r,
+    /usr/local/bin/kiwix-serve mr,
     /etc/passwd r,
     /dev/tty rw,
   }
